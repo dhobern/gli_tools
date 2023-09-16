@@ -1,0 +1,1 @@
+folder = "./airflow/scratch/lepidoptera_updates"
