@@ -1,6 +1,9 @@
 from airflow import DAG
 from airflow.operators.bash import BashOperator
 import datetime
+import pendulum
+
+local_tz = pendulum.timezone("Australia/Canberra")
 
 dag = DAG(
     dag_id="git_updates",
