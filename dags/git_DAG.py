@@ -12,6 +12,6 @@ dag = DAG(
 
 zip = BashOperator(
     task_id="pull",
-    bash_command="cd /home/dhobern/gli_tools && gh fetch && gh pull && cp dags/*.py /home/dhobern/airflow/dags",
+    bash_command="su dhobern && cd /home/dhobern/gli_tools && git fetch && git pull && cp dags/*.py /home/dhobern/airflow/dags",
     dag=dag,
 )
