@@ -1,1 +1,1 @@
-folder = "/opt/airflow/scratch/lepidoptera_updates"
+folder = "/home/dhobern/airflow/scratch/lepidoptera_updates"
