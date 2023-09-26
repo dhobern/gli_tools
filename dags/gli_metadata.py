@@ -63,7 +63,7 @@ def update_metadata():
 
         table = (
             "| Family | Names | Mean year | Synonyms | Modified | Citation |\n"
-            "| --- | ---: | :---: | ---: | ---: | ---: |\n"
+            "| --- | ---: | :---: | ---: | ---: | ---: |"
         )
 
         families = pd.read_csv(cfg.family_file, keep_default_na=False, sep=",")
