@@ -129,7 +129,7 @@ def update_metadata():
         for sf in cfg.superfamilies + [""]:
             block = pd.Series(rows[families["superfamily"] == sf]).str.cat(sep="\n")
             if block:
-                table += block
+                table += "\n" + block
 
         explanation = (
             "The following statistics indicate progress towards cleaning the Global Lepidoptera Index. For each family:\n\n"
