@@ -1,8 +1,11 @@
 import os
-from coldp import COLDP
+
 import coldp_sort
-import gli_config as cfg
 import pandas as pd
+from coldp import COLDP
+
+import gli_config as cfg
+
 
 def summarise():
     if os.path.exists(cfg.coldp_path) and os.path.isdir(cfg.coldp_path):
@@ -10,9 +13,7 @@ def summarise():
         hierarchy = coldp_sort.build_hierarchy(coldp)
         hierarchy = pd.merge(
             hierarchy.drop(columns=["scientificName", "rank"]),
-            coldp.names.drop(
-                columns=["genus", "status", "remarks", "code", "link"]
-            ),
+            coldp.names.drop(columns=["genus", "status", "remarks", "code"]),
             left_on="nameID",
             right_on="ID",
             how="left",
