@@ -21,7 +21,7 @@ def get_zt_issues():
         writer= csv.writer(f, delimiter=',')
         writer.writerow(["title", "series", "url"])
         issues = tree.xpath("//div[@class='obj_issue_summary']")
-        for issue in issues:
+        for _, issue in zip(range(20), issues):
             title = issue.xpath(".//a[@class='title']")[0].text.strip()
             series = issue.xpath(".//div[@class='series']")[0].text.strip()
             url = issue.xpath(".//a[@class='title']")[0].attrib["href"].strip()
