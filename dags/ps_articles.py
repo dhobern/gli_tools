@@ -1,4 +1,4 @@
-from urllib.request import urlopen
+from urllib.request import urlopen, Request
 from lxml import etree
 import csv
 import os
@@ -18,7 +18,10 @@ def get_pensoft_articles(sites = []):
         with open(file_latest, "w", newline='', encoding='utf8') as f:
             writer = csv.writer(f, delimiter=",")
             writer.writerow(["journal", "url", "title", "authors", "issue", "pages", "image"])
-            page = urlopen(f"https://{shortname}.pensoft.net/browse_journal_articles.php?form_name=filter_articles&sortby=0&alerts_taxon_cats=t279")
+
+            req = Request(f"https://{shortname}.pensoft.net/browse_journal_articles.php?form_name=filter_articles&sortby=0&alerts_taxon_cats=t279", data=None, headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux i686; rv:109.0) Gecko/20100101 Firefox/116.0'})
+            page = urlopen(req)
+            #page = urlopen(f"https://{shortname}.pensoft.net/browse_journal_articles.php?form_name=filter_articles&sortby=0&alerts_taxon_cats=t279")
             html = page.read().decode("utf-8").replace("<i>", "!@em@!").replace("</i>", "!@/em@!").replace("<em>", "!@em@!").replace("</em>", "!@/em@!").replace('<span class="pages_icon"></span> <span>', '<span class="pages_icon">')
             tree = etree.HTML(html)
             articles = tree.xpath("//div[@class='article']")
