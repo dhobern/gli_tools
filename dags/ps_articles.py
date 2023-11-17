@@ -9,6 +9,7 @@ def get_pensoft_articles(sites = []):
     for s in sites:
         shortname = s["shortname"]
         name = s["name"]
+        print(f"Processing {name} / {shortname}")
 
         file_latest = os.path.join(folder, f"{shortname}.csv")
         
