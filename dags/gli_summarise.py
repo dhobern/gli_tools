@@ -12,7 +12,12 @@ def summarise():
         coldp = COLDP(cfg.scratch_folder, cfg.coldp_name, issues_to_stdout=True)
         hierarchy = coldp_sort.build_hierarchy(coldp)
         hierarchy = pd.merge(
-            hierarchy.drop(columns=["scientificName", "rank"]),
+            hierarchy[
+                (hierarchy["genus"] != "")
+                | (hierarchy["subgenus"] != "")
+                | (hierarchy["species"] != "")
+                | (hierarchy["subspecies"] != "")
+            ].drop(columns=["scientificName", "rank"]),
             coldp.names.drop(columns=["genus", "status", "remarks", "code"]),
             left_on="nameID",
             right_on="ID",

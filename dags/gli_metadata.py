@@ -132,7 +132,7 @@ def update_metadata():
                 table += "\n" + block
 
         explanation = (
-            "The following statistics indicate progress towards cleaning the Global Lepidoptera Index. For each family:\n\n"
+            "The following statistics indicate progress towards cleaning the Global Lepidoptera Index. For each family, counts are based on all accepted and synonymised names at genus rank of lower. Columns are as follows:\n\n"
             "* **Names** is the count of scientific names included within the family.\n"
             "* **Mean year** is the arithmetic mean of the publication years for scientific names within the family - a higher value may mean that more recent taxonomic work has been included.\n"
             "* **Synonyms** is the percentage of scientific names that are identified as synonyms or alternative combinations for an accepted species - a higher value may mean that more taxonomic revisionary work has been included.\n"
