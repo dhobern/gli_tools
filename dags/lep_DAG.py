@@ -60,14 +60,19 @@ sciencedirect_articles = PythonOperator(
     op_kwargs={
         "feeds": [
             {
-                "name": "Journal of Asia-Pacific Entomology",
-                "shortname": "apentom",
-                "rss": "https://rss.sciencedirect.com/publication/science/12268615",
+                "name": "Zoologischer Anzeiger",
+                "shortname": "zoolanz",
+                "rss": "https://rss.sciencedirect.com/publication/science/00445231",
             },
             {
                 "name": "Journal of Asia-Pacific Biodiversity",
                 "shortname": "apbiodiv",
                 "rss": "https://rss.sciencedirect.com/publication/science/2287884X",
+            },
+            {
+                "name": "Journal of Asia-Pacific Entomology",
+                "shortname": "apent",
+                "rss": "https://rss.sciencedirect.com/publication/science/12268615",
             },
         ]
     },
