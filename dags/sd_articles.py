@@ -5,7 +5,8 @@ import os
 import re
 import lep_config
 
-def get_sd_articles(feeds = []):
+
+def get_sd_articles(feeds=[]):
     folder = lep_config.folder
     if not os.path.exists(folder):
         os.mkdir(folder)
@@ -14,21 +15,29 @@ def get_sd_articles(feeds = []):
     pattern_2 = re.compile(r"^.*Author.*: ([^<]*).*")
     pages = ""
     image = ""
-    
-    for feed in feeds:
 
+    for feed in feeds:
         name = feed["name"]
         shortname = feed["shortname"]
         rss = feed["rss"]
 
+        print(f"Processing {name}")
+
         file_latest = os.path.join(folder, f"{shortname}.csv")
-        
-        with open(file_latest, "w", newline='', encoding='utf8') as f:
 
+        with open(file_latest, "w", newline="", encoding="utf8") as f:
             writer = csv.writer(f, delimiter=",")
-            writer.writerow(["journal", "url", "title", "authors", "issue", "pages", "image"])
+            writer.writerow(
+                ["journal", "url", "title", "authors", "issue", "pages", "image"]
+            )
 
-            req = urllib.request.Request(rss, data=None, headers = {'User-Agent': 'Mozilla/5.0 (X11; Linux i686; rv:109.0) Gecko/20100101 Firefox/116.0'})
+            req = urllib.request.Request(
+                rss,
+                data=None,
+                headers={
+                    "User-Agent": "Mozilla/5.0 (X11; Linux i686; rv:109.0) Gecko/20100101 Firefox/116.0"
+                },
+            )
             page = urllib.request.urlopen(req)
             xml = page.read()
             tree = etree.XML(xml)
