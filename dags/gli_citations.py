@@ -4,6 +4,7 @@ import gli_config as cfg
 
 
 def report_citations():
+    print(f"{cfg.summary_file}")
     if os.path.exists(cfg.summary_file):
         summary = pd.read_csv(
             cfg.summary_file, dtype=str, keep_default_na=False, sep=","
@@ -27,15 +28,26 @@ def report_citations():
             suffixes=("", "_r"),
         )
 
-        """
-        pivot = pd.pivot_table(summary, values='scientificName', index=['year', 'month', 'referenceID', 'citation', 'superfamily', 'family', 'subfamily', 'tribe'],
-                                aggfunc=pd.Series.nunique)
-        """
-
         pivot = pd.pivot_table(
-            summary,
+            summary[summary["year"] > "2021"],
             values="ID",
-            index=["year", "citation", "family"],
+            index=["year", "family", "citation"],
             aggfunc=pd.Series.nunique,
         )
-        pivot.to_csv(cfg.citation_file, index=True)
+        pivot = pivot[(pivot["ID"] > 9)].sort_index(
+            level=[0, 1, 2], ascending=[False, True, True]
+        )
+
+        with open(cfg.citation_file, "w", encoding="utf8") as report:
+            year = ""
+            family = ""
+            for idx, value in pivot.groupby(level=[0, 1, 2], sort=False):
+                y, f, c = idx
+                if y != year:
+                    year = y
+                    family = ""
+                    report.write(f"\n**{year}**\n")
+                if f != family:
+                    family = f
+                    report.write(f"* **{family}**\n")
+                report.write(f"    * {c}\n")

@@ -141,7 +141,18 @@ def update_metadata():
             "Bold taxon names highlight groups which have been significantly edited in the Global Lepidoptera Index. Italicised taxon names indicate groups which are not actively maintained in this dataset. Bold values for percentages indicate that the value is more than one standard deviation above the mean.\n\n"
         )
 
-        metadata["description"] = f"{description}{eyecatcher}{explanation}{table}"
+        citations = ""
+
+        with open(cfg.citation_file, encoding="utf8") as citation_file:
+            citation_list = citation_file.readlines()
+            citations = (
+                "\n\n**References**\nThe following publications have each contributed a significant number of updates to the Global Lepidoptera Index in years following 2021. In each case, at least 10 species names from the specified family were updated using the named publication in the specified year.\n"
+                + "\n".join(citation_list)
+            )
+
+        metadata[
+            "description"
+        ] = f"{description}{eyecatcher}{explanation}{table}{citations}"
 
         with open(cfg.metadata_file, "w", encoding="utf8") as file:
             yaml.dump(metadata, file)
