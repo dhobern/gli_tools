@@ -70,7 +70,7 @@ metadata = PythonOperator(
 
 zip = BashOperator(
     task_id="zip",
-    bash_command="cd /home/dhobern/airflow/scratch/gli_updates/gli && zip -r ../gli.zip *",
+    bash_command="cd /home/dhobern/airflow/scratch/gli_updates/gli && zip -r ../gli.zip *.csv *.md",
     dag=dag,
 )
 
