@@ -27,7 +27,6 @@ def report_citations():
             right_on="ID",
             suffixes=("", "_r"),
         )
-
         pivot = pd.pivot_table(
             summary[summary["year"] > "2021"],
             values="ID",
@@ -37,15 +36,11 @@ def report_citations():
         pivot = pivot[(pivot["ID"] > 9)].sort_index(
             level=[0, 1, 2], ascending=[False, True, True]
         )
-        pivot.to_csv(cfg.citation_file, encoding="utf8", index=True)
-        pivot = pd.read_csv(
-            cfg.citation_file, dtype=str, keep_default_na=False, sep=","
-        )
         with open(cfg.citation_report, "w", encoding="utf8") as report:
             year = ""
             family = ""
             for idx, row in pivot.iterrows():
-                y, f, c = row["year"], row["family"], row["citation"]
+                y, f, c = idx
                 if y != year:
                     year = y
                     family = ""
