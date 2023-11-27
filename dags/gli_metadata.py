@@ -147,7 +147,7 @@ def update_metadata():
             citation_list = citation_file.readlines()
             citations = (
                 "\n\n**References**\n\nThe following publications have each contributed a significant number of updates to the Global Lepidoptera Index in years following 2021. In each case, at least 10 species names from the specified family were updated using the named publication in the specified year.\n"
-                + "\n".join(citation_list)
+                + "".join(citation_list)
             )
 
         metadata[
