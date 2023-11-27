@@ -154,5 +154,12 @@ def update_metadata():
             "description"
         ] = f"{description}{eyecatcher}{explanation}{table}{citations}"
 
+        with open(cfg.description_file, "w", encoding="utf8") as description_file:
+            description_file.write(f"{metadata['description']}\n")
+
         with open(cfg.metadata_file, "w", encoding="utf8") as file:
             yaml.dump(metadata, file)
+
+
+if __name__ == "__main__":
+    update_metadata()
