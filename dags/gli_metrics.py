@@ -41,6 +41,7 @@ def report_metrics():
             "tribe": cfg.tribe_file,
         }
         for r in ranks_of_interest:
+            print(f"Processing {r}")
             ranks_for_index.append(r)
             rank_pivot = pd.pivot_table(
                 summary,
@@ -55,7 +56,7 @@ def report_metrics():
                 index=ranks_for_index,
                 aggfunc=pd.Series.nunique,
             )
-            ivot.rename(columns={"scientificName": "speciesCount"}, inplace=True)
+            pivot.rename(columns={"scientificName": "speciesCount"}, inplace=True)
             rank_pivot = pd.merge(rank_pivot, pivot, on=ranks_for_index)
             pivot = pd.pivot_table(
                 summary, values="year", index=ranks_for_index, aggfunc="mean"
@@ -113,3 +114,7 @@ def report_metrics():
                     rank_pivot["modifiedThisYear"] / rank_pivot["nameCount"]
                 )
             rank_pivot.to_csv(metrics_files[r], index=True)
+
+
+if __name__ == "__main__":
+    report_metrics()

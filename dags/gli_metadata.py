@@ -34,7 +34,7 @@ def get_row(values):
     else:
         name = values["superfamily"]
 
-    return f"| {name} | {values['nameCount']} | {round(values['year'])} | {format_percent(values['fractionSynonyms'], values['significantSynonyms'])}% | {format_percent(values['fractionModifiedSinceImport'], values['significantModifiedSinceImport'])}% | {format_percent(values['fractionHasCitation'], values['significantHasCitation'])}% |"
+    return f"| {name} | {values['nameCount']} | {values['speciesCount']} | {round(values['year'])} | {format_percent(values['fractionSynonyms'], values['significantSynonyms'])}% | {format_percent(values['fractionModifiedSinceImport'], values['significantModifiedSinceImport'])}% | {format_percent(values['fractionHasCitation'], values['significantHasCitation'])}% |"
 
 
 def update_metadata():
@@ -62,8 +62,8 @@ def update_metadata():
         print(f"Strengths: {', '.join(strengths)}")
 
         table = (
-            "| Family | Names | Mean year | Synonyms | Modified | Citation |\n"
-            "| --- | ---: | :---: | ---: | ---: | ---: |"
+            "| Family | Names | Species | Mean year | Synonyms | Modified | Citation |\n"
+            "| --- | ---: | ---: | :---: | ---: | ---: | ---: |"
         )
 
         families = pd.read_csv(cfg.family_file, keep_default_na=False, sep=",")
@@ -131,10 +131,14 @@ def update_metadata():
             if block:
                 table += "\n" + block
 
+        order = pd.read_csv(cfg.order_file, keep_default_na=False, sep=",")
+        table += f"\n| **ALL LEPIDOPTERA** | {order['nameCount'][0]} | {order['speciesCount'][0]} | {round(order['year'][0])} | {format_percent(order['fractionSynonyms'][0], False)}% | {format_percent(order['fractionModifiedSinceImport'][0], False)}% | {format_percent(order['fractionHasCitation'][0], False)}% |"
+
         explanation = (
-            "The following statistics indicate progress towards cleaning the Global Lepidoptera Index. For each family, counts are based on all accepted and synonymised names at genus rank or lower. Columns are as follows:\n\n"
-            "* **Names** is the count of scientific names included within the family.\n"
-            "* **Mean year** is the arithmetic mean of the publication years for scientific names within the family - a higher value may mean that more recent taxonomic work has been included.\n"
+            "The following statistics indicate progress towards cleaning the Global Lepidoptera Index. For each taxon, counts are based on all accepted and synonymised names at genus rank or lower. Columns are as follows:\n\n"
+            "* **Names** is the count of scientific names included within the taxon.\n"
+            "* **species** is the count of accepted species included within the taxon.\n"
+            "* **Mean year** is the arithmetic mean of the publication years for scientific names within the taxon - a higher value may mean that more recent taxonomic work has been included.\n"
             "* **Synonyms** is the percentage of scientific names that are identified as synonyms or alternative combinations for an accepted species - a higher value may mean that more taxonomic revisionary work has been included.\n"
             "* **Modified** is the percentage of scientific names that have been added or modified since data were imported from the historical LepIndex dataset - higher values indicate more work on the family within the Global Lepidoptera Index.\n"
             "* **Citation** is the percentage of scientific names that are associated with a publication reference - higher values indicate a greater confidence that the names have been reviewed.\n\n"
