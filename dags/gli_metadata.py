@@ -34,7 +34,7 @@ def get_row(values):
     else:
         name = values["superfamily"]
 
-    return f"| {name} | {values['scientificName']} | {round(values['year'])} | {format_percent(values['fractionSynonyms'], values['significantSynonyms'])}% | {format_percent(values['fractionModifiedSinceImport'], values['significantModifiedSinceImport'])}% | {format_percent(values['fractionHasCitation'], values['significantHasCitation'])}% |"
+    return f"| {name} | {values['nameCount']} | {round(values['year'])} | {format_percent(values['fractionSynonyms'], values['significantSynonyms'])}% | {format_percent(values['fractionModifiedSinceImport'], values['significantModifiedSinceImport'])}% | {format_percent(values['fractionHasCitation'], values['significantHasCitation'])}% |"
 
 
 def update_metadata():
