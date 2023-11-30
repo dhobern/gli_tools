@@ -2,6 +2,9 @@ import os
 import gli_config as cfg
 from urllib.request import urlopen
 import pandas as pd
+import numpy as np
+import math
+import matplotlib.pyplot as plt
 import datetime
 import yaml
 import re
@@ -163,6 +166,92 @@ def update_metadata():
 
         with open(cfg.metadata_file, "w", encoding="utf8") as file:
             yaml.dump(metadata, file)
+
+        summary = pd.read_csv(
+            cfg.summary_file, dtype=str, keep_default_na=False, sep=","
+        )
+        summary["year"] = summary["authorship"].apply(
+            lambda x: re.sub(r"[^0-9]*([1-2][0-9]{3})?.*", r"\1", str(x))
+        )
+        summary["year"] = summary["year"].apply(lambda x: np.nan if x == "" else int(x))
+
+        summary = summary[
+            (summary["rank"].isin(["species", "subspecies", "variety", "form"])
+            & (summary["nameID"] == summary["basionymID"])
+            & ~(summary["year"] == np.nan)
+            & (summary["year"] >= 1758)
+        ]
+        summary["strength"] = 0
+        summary.loc[
+            (summary["superfamily"].isin(strengths))
+            | (summary["family"].isin(strengths))
+            | (summary["subfamily"].isin(strengths))
+            | (summary["tribe"].isin(strengths)),
+            ["strength"],
+        ] = 1
+        summary["exclusion"] = 0
+        summary.loc[
+            (summary["superfamily"].isin(exclusions))
+            | (summary["family"].isin(exclusions))
+            | (summary["subfamily"].isin(exclusions))
+            | (summary["tribe"].isin(exclusions)),
+            ["exclusion"],
+        ] = 1
+        curves = pd.DataFrame()
+        curves["year"] = pd.Series(range(1758, 2024))
+        strong = pd.pivot_table(
+            summary[summary["strength"] == 1],
+            values="strength",
+            index="year",
+            aggfunc="sum",
+        )
+        curves = pd.merge(curves, strong, how="left", on="year")
+        excluded = pd.pivot_table(
+            summary[summary["exclusion"] == 1],
+            values="exclusion",
+            index="year",
+            aggfunc="sum",
+        )
+        curves = pd.merge(curves, excluded, how="left", on="year")
+        other = pd.pivot_table(
+            summary[(summary["strength"] == 0) & (summary["exclusion"] == 0)],
+            values="scientificName",
+            index="year",
+            aggfunc=pd.Series.nunique,
+        )
+        other.rename(columns={"scientificName": "other"}, inplace=True)
+        curves = pd.merge(curves, other, how="left", on="year")
+        curves["rollingStrong"] = (
+            curves["strength"].rolling(11, center=True, min_periods=1).mean()
+        )
+        curves["rollingExcluded"] = (
+            curves["exclusion"].rolling(11, center=True, min_periods=1).mean()
+        )
+        curves["rollingOther"] = (
+            curves["other"].rolling(11, center=True, min_periods=1).mean()
+        )
+        curves["rollingLegacy"] = curves["rollingExcluded"] + curves["rollingOther"]
+        curves["percentLegacy"] = (
+            100 * curves["rollingLegacy"] / curves["rollingLegacy"].sum()
+        )
+        curves["percentStrong"] = (
+            100 * curves["rollingStrong"] / curves["rollingStrong"].sum()
+        )
+
+        curves.to_csv(cfg.basionym_file)
+
+        fig = plt.figure(figsize=(12, 8))
+        plt.title("Species-rank basionyms by year (11-year rolling)")
+        plt.xlabel("Year")
+        plt.ylabel("Percentage of basionyms per year")
+        plt.plot(
+            curves["year"], curves["percentLegacy"], color="red", label="Incomplete"
+        )
+        plt.plot(
+            curves["year"], curves["percentStrong"], color="green", label="Updated"
+        )
+        plt.legend(loc="upper left")
+        plt.savefig(cfg.basionym_chart)
 
 
 if __name__ == "__main__":
