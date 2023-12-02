@@ -176,7 +176,7 @@ def update_metadata():
         summary["year"] = summary["year"].apply(lambda x: np.nan if x == "" else int(x))
 
         summary = summary[
-            (summary["rank"].isin(["species", "subspecies", "variety", "form"])
+            (summary["rank"].isin(["species", "subspecies", "variety", "form"]))
             & (summary["nameID"] == summary["basionymID"])
             & ~(summary["year"] == np.nan)
             & (summary["year"] >= 1758)
