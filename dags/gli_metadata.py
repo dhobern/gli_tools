@@ -4,7 +4,6 @@ from urllib.request import urlopen
 import pandas as pd
 import numpy as np
 import math
-import matplotlib.pyplot as plt
 import datetime
 import yaml
 import re
