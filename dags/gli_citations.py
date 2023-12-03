@@ -36,6 +36,8 @@ def report_citations():
         pivot = pivot[(pivot["ID"] > 9)].sort_index(
             level=[0, 1, 2], ascending=[False, True, True]
         )
+        # The sort_index seems not to work on Ubuntu - saving to check
+        pivot.to_csv(os.path.join(cfg.scratch_folder, "sorted_citations.csv"))
         with open(cfg.citation_report, "w", encoding="utf8") as report:
             year = ""
             family = ""
@@ -49,3 +51,7 @@ def report_citations():
                     family = f
                     report.write(f"* **{family}**\n")
                 report.write(f"    * {c}\n")
+
+
+if __name__ == "__main__":
+    report_citations()
