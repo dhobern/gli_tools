@@ -16,6 +16,7 @@ import zt_articles
 import em_articles
 import blgj_articles
 import jib_articles
+import ses_page_update
 import lep_merge
 import lep_format
 import lep_archive
@@ -209,6 +210,12 @@ ecolmont_articles = PythonOperator(
     dag=dag,
 )
 
+ses_page = PythonOperator(
+    task_id="ses_page_update",
+    python_callable=ses_page_update.get_ses_page_update,
+    dag=dag,
+)
+
 merge_articles = PythonOperator(
     task_id="merge_articles",
     python_callable=lep_merge.merge_articles,
@@ -255,6 +262,7 @@ zootaxa_issues >> zootaxa_select >> zootaxa_articles
         biologija_articles,
         jinsbiod_articles,
         shilap_articles,
+        ses_page,
     ]
     >> merge_articles
     >> format_articles
