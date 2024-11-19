@@ -26,6 +26,12 @@ dag = DAG(
     catchup=False,
 )
 
+download = BranchPythonOperator(
+    task_id="download",
+    python_callable=gli_download.download_archive,
+    dag=dag,
+)
+
 unpack = BranchPythonOperator(
     task_id="unpack",
     python_callable=gli_unpack.unpack_archive,
@@ -97,10 +103,11 @@ finish = EmptyOperator(
     dag=dag,
 )
 
-unpack >> summarise >> months
+download >> unpack >> summarise >> months
 summarise >> citations
 summarise >> metrics
 summarise >> sequence
+download >> finish
 unpack >> finish
 [months, citations, metrics] >> metadata
 [metadata, sequence] >> zip >> upload >> backup >> cleanup >> finish
